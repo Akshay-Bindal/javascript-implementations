@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript">
+		function myPromise(cb) {
+			this.resolverFunc = [];
+			this.rejectFunc = [];
+			this.resolve = function(argument) {
+				if(this.resolverFunc && this.resolverFunc.length) {
+					for(var i=0;i<this.resolverFunc.length;i++) {
+						this.resolverFunc[i](argument);
+					}
+					delete this.resolverFunc;
+				}
+				else {
+					console.log(new Error('Promise already resolved'));
+				}
+			}
+			
+			this.reject = function(argument) {
+				if(this.rejectFunc && this.rejectFunc.length) {
+					for(var i=0;i<this.rejectFunc.length;i++) {
+						this.rejectFunc[i](argument);
+					}
+					delete this.rejectFunc;
+				}
+				else {
+					console.log(new Error('Promise already rejected'));
+				}
+			}
+
+			this.then = function(resolve,reject) {
+				this.resolverFunc.push(resolve);
+				this.rejectFunc.push(reject);
+			}
+			
+			if(cb) {
+				cb(this.resolve.bind(this), this.reject.bind(this));
+			}
+		}
+
+		myPromise.all = function(arr) {
+			var count = 0;
+			var output = [];
+			return {
+				then: function (sucesscb,errorcb) {
+					for(var j=0;j<arr.length;j++) {
+						arr[j].then(function(data) {
+							count++;
+							output.push(data);
+							if(count === arr.length) {
+								sucesscb(output);
+								console.log('everthing is done')
+							}
+						}) 
+					}
+				}
+			}
+		}
+
+		var p = new myPromise(function(resolve,reject){
+			setTimeout(function(){
+				console.log('resolved');
+				resolve(78);
+				resolve(89);
+			},1000);
+		})
+
+		var q = new myPromise(function(resolve,reject){
+			setTimeout(function(){
+				console.log('resolved');
+				resolve(98);
+			},1000);
+		})
+
+		p.then(function(data){
+			console.log(data);
+		},function(){
+
+		})
+
+		q.then(function(data){
+			console.log(data);
+		},function(){
+
+		})
+
+		// var p1 = new myPromise(function(resolve,reject){
+		// 	setTimeout(function(){
+		// 		console.log('resolved');
+		// 		resolve(78);
+		// 	},1000);
+		// })
+
+		// var p2 = new myPromise(function(resolve,reject){
+		// 	setTimeout(function(){
+		// 		console.log('resolved');
+		// 		resolve(7887);
+		// 	},2000);
+		// })
+
+		// myPromise.all([p1,p2]).then(function(data) {
+		// 	console.log(data);
+		// })
+
+		// var getMilk = function() {
+		// 	var ajaxPromise = new myPromise();
+		// 	setTimeout(function(){
+		// 		console.log('resolved');
+		// 		ajaxPromise.resolve(100);
+		// 	},2000)
+		// 	return ajaxPromise;
+		// }
+
+		// var get = getMilk();
+		// get.then(function(data){
+		// 	console.log(data);
+		// },function(){
+
+		// })
+
+	</script>
+</head>
+<body>
+</body>
+</html>
