@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Server 2</title>
+	<script src='./index.js'></script>
+	<style type="text/css">
+		.container {
+		  background-color: red;
+		}
+
+
+		[data-tool]:after, [data-tool]:before {display:none;}
+		[data-tool]:after {content:attr(data-tool);position:absolute;bottom: 200px;}
+		[data-tool]:before {content: ' ', position: absolute;}
+		[data-tool]:hover:after, [data-tool]:hover:before {
+			display:block;
+		}
+
+		* {
+			margin: 0px;
+			padding: 0px;
+		}
+
+	</style>
+</head>
+<body>
+	<div class="container">
+	    <a data-tool='Tooltip text'>I am tooltip</a>
+	</div>
+
+</body>
+</html>
